@@ -24,9 +24,11 @@ Then follow the instructions for your platform to link react-native-video into y
 ### Standard Method
 Run `pod install` in the `ios` directory of your project.
 
+⚠️ from version `6.0.0` the minimum iOS version required is `13.0`. For more information see [updating section](updating.md)
+
 ### Enable custom feature in podfile file
 
-Samples available in sample app see [sample pod file](https://github.com/react-native-video/react-native-video/blob/9c669a2d8a53df36773fd82ff0917280d0659bc7/examples/basic/ios/Podfile#L34)
+Samples available in sample app see [sample pod file](https://github.com/TheWidlarzGroup/react-native-video/blob/9c669a2d8a53df36773fd82ff0917280d0659bc7/examples/basic/ios/Podfile#L34)
 
 #### Video caching
 
@@ -47,38 +49,58 @@ To enable google IMA usage define add following line in your podfile:
 $RNVideoUseGoogleIMA=true
 ```
 
+**If you are using Expo you can use [expo plugin](other/expo.md) for it**
+
 </details>
 <details>
 <summary>Android</summary>
 
 ## Android
 
-From version >= 6.0.0, your application needs to have kotlin version >= 1.7.0
+From version >= 6.0.0, your application needs to have kotlin version >= 1.8.0
 
 ```:
 buildscript {
     ...
-    ext.kotlinVersion = '1.7.0'
+    ext.kotlinVersion = '1.8.0',
+    ext.compileSdkVersion = 34
+    ext.targetSdkVersion = 34
     ...
 }
 ```
 
 ### Enable custom feature in gradle file
 
-#### Enable client side ads insertion
-To enable client side ads insertion CSAI with google IMA SDK, you need to enable it in your gradle file.
+**If you are using Expo you can use [expo plugin](other/expo.md) for it**
+
+You can disable or enable the following features by setting the following variables in your `android/build.gradle` file:
+- `useExoplayerIMA` - Enable Google IMA SDK (Ads support)
+- `useExoplayerRtsp` - Enable RTSP support
+- `useExoplayerSmoothStreaming` - Enable SmoothStreaming support
+- `useExoplayerDash` - Enable Dash support
+- `useExoplayerHls` - Enable HLS support
+
+Each of these features enabled will increase the size of your APK, so only enable the features you need.
+By default enabled features are: `useExoplayerSmoothStreaming`, `useExoplayerDash`, `useExoplayerHls`
+
+
+Example:
 
 ```gradle
 buildscript {
   ext {
     ...
-    RNVUseExoplayerIMA = true
+    useExoplayerIMA = true
+    useExoplayerRtsp = true
+    useExoplayerSmoothStreaming = true
+    useExoplayerDash = true
+    useExoplayerHls = true
     ...
   }
 }
 ```
 
-See [sample app](https://github.com/react-native-video/react-native-video/blob/9c669a2d8a53df36773fd82ff0917280d0659bc7/examples/basic/android/build.gradle#L14C5-L14C5)
+See [sample app](https://github.com/TheWidlarzGroup/react-native-video/blob/9c669a2d8a53df36773fd82ff0917280d0659bc7/examples/basic/android/build.gradle#L14C5-L14C5)
 
 </details>
 <details>
@@ -160,22 +182,11 @@ Run `pod install` in the `visionos` directory of your project
 
 </details>
 
-## Examples
+<details>
+<summary>web</summary>
 
-Run `yarn xbasic install` in the root directory before running any of the examples.
+Nothing to do, everything should work out of the box.
 
-### iOS Example
-```bash
-yarn xbasic ios
-```
+Note that only basic video support is present, no hls/dash or ads/drm for now.
 
-### Android Example
-```bash
-yarn xbasic android
-```
-
-### Windows Example
-```bash
-yarn xbasic windows
-```
-
+</details>

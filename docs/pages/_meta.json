@@ -11,11 +11,25 @@
   "changelog": {
     "title": "Changelog",
     "newWindow": true,
-    "href": "https://github.com/react-native-video/react-native-video/blob/master/CHANGELOG.md"
+    "href": "https://github.com/TheWidlarzGroup/react-native-video/blob/master/CHANGELOG.md"
   },
   "separator_community": {
     "type": "separator",
     "title": ""
   },
-  "projects": "Useful projects"
+  "example_apps": {
+    "title": "Example Apps",
+    "newWindow": true,
+    "href": "https://github.com/TheWidlarzGroup/react-native-video/tree/master/examples"
+  },
+  "projects": "Useful projects",
+  "separator_enterprise": {
+    "type": "separator",
+    "title": ""
+  },
+  "enterprise_support": {
+    "title": "Enterprise Support",
+    "newWindow": true,
+    "href": "https://www.thewidlarzgroup.com/?utm_source=rnv&utm_medium=docs#Contact"
+  }
 }

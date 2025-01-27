@@ -15,15 +15,19 @@ enum RCTPlayerOperations {
         let trackCount: Int! = player?.currentItem?.tracks.count ?? 0
 
         // The first few tracks will be audio & video track
-        var firstTextIndex = 0
+        var firstTextIndex = -1
         for i in 0 ..< trackCount where player?.currentItem?.tracks[i].assetTrack?.hasMediaCharacteristic(.legible) ?? false {
             firstTextIndex = i
             break
         }
+        if firstTextIndex == -1 {
+            // no sideLoaded text track available (can happen with invalid vtt url)
+            return
+        }
 
         var selectedTrackIndex: Int = RCTVideoUnset
 
-        if type == "disabled" {
+        if (type == "disabled") || (type == "none") || (type == "") {
             // Select the last text index which is the disabled text track
             selectedTrackIndex = trackCount - firstTextIndex
         } else if type == "language" {
@@ -45,9 +49,11 @@ enum RCTPlayerOperations {
                 }
             }
         } else if type == "index" {
-            if let value = criteria?.value, let index = value as? Int {
-                if textTracks.count > index {
-                    selectedTrackIndex = index
+            if let value = criteria?.value { // check value is provided
+                if let indexValue = Int(value as String) { // ensure value is an integer an String to Snt
+                    if textTracks.count > indexValue { // ensure value is in group range
+                        selectedTrackIndex = indexValue
+                    }
                 }
             }
         }
@@ -78,57 +84,6 @@ enum RCTPlayerOperations {
         }
     }
 
-    // UNUSED
-    static func setStreamingText(player: AVPlayer?, criteria: SelectedTrackCriteria?) async {
-        let type = criteria?.type
-        var mediaOption: AVMediaSelectionOption!
-
-        guard let group = await RCTVideoAssetsUtils.getMediaSelectionGroup(asset: player?.currentItem?.asset, for: .legible) else {
-            return
-        }
-
-        if type == "disabled" {
-            // Do nothing. We want to ensure option is nil
-        } else if (type == "language") || (type == "title") {
-            let value = criteria?.value as? String
-            for i in 0 ..< group.options.count {
-                let currentOption: AVMediaSelectionOption! = group.options[i]
-                var optionValue: String!
-                if type == "language" {
-                    optionValue = currentOption.extendedLanguageTag
-                } else {
-                    optionValue = currentOption.commonMetadata.map(\.value)[0] as! String
-                }
-                if value == optionValue {
-                    mediaOption = currentOption
-                    break
-                }
-            }
-            // } else if ([type isEqualToString:@"default"]) {
-            //  option = group.defaultOption; */
-        } else if type == "index" {
-            if let value = criteria?.value, let index = value as? Int {
-                if group.options.count > index {
-                    mediaOption = group.options[index]
-                }
-            }
-        } else { // default. invalid type or "system"
-            #if os(tvOS)
-            // Do noting. Fix for tvOS native audio menu language selector
-            #else
-                await player?.currentItem?.selectMediaOptionAutomatically(in: group)
-                return
-            #endif
-        }
-
-        #if os(tvOS)
-        // Do noting. Fix for tvOS native audio menu language selector
-        #else
-            // If a match isn't found, option will be nil and text tracks will be disabled
-            await player?.currentItem?.select(mediaOption, in: group)
-        #endif
-    }
-
     static func setMediaSelectionTrackForCharacteristic(player: AVPlayer?, characteristic: AVMediaCharacteristic, criteria: SelectedTrackCriteria?) async {
         let type = criteria?.type
         var mediaOption: AVMediaSelectionOption!
@@ -137,7 +92,7 @@ enum RCTPlayerOperations {
             return
         }
 
-        if type == "disabled" {
+        if (type == "disabled") || (type == "none") || (type == "") {
             // Do nothing. We want to ensure option is nil
         } else if (type == "language") || (type == "title") {
             let value = criteria?.value as? String
@@ -157,9 +112,11 @@ enum RCTPlayerOperations {
             // } else if ([type isEqualToString:@"default"]) {
             //  option = group.defaultOption; */
         } else if type == "index" {
-            if let value = criteria?.value, let index = value as? Int {
-                if group.options.count > index {
-                    mediaOption = group.options[index]
+            if let value = criteria?.value { // check value is provided
+                if let indexValue = Int(value as String) { // ensure value is an integer an String to Snt
+                    if group.options.count > indexValue { // ensure value is in group range
+                        mediaOption = group.options[indexValue]
+                    }
                 }
             }
         } else { // default. invalid type or "system"

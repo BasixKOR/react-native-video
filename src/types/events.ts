@@ -4,6 +4,7 @@ import type {
   OnAudioTracksData,
   OnBandwidthUpdateData,
   OnBufferData,
+  OnControlsVisibilityChange,
   OnExternalPlaybackChangeData,
   OnLoadStartData,
   OnPictureInPictureStatusChangedData,
@@ -19,8 +20,11 @@ import type {
   OnVolumeChangeData,
 } from '../specs/VideoNativeComponent';
 
+export type * from '../specs/VideoNativeComponent';
+
 export type AudioTrack = OnAudioTracksData['audioTracks'][number];
 export type TextTrack = OnTextTracksData['textTracks'][number];
+export type VideoTrack = OnVideoTracksData['videoTracks'][number];
 
 export type OnLoadData = Readonly<{
   currentTime: number;
@@ -46,6 +50,15 @@ export type OnLoadData = Readonly<{
      * iOS only supports VTT, Android supports all 3
      */
     type?: WithDefault<'srt' | 'ttml' | 'vtt', 'srt'>;
+    selected?: boolean;
+  }[];
+  videoTracks: {
+    index: number;
+    tracksID?: string;
+    codecs?: string;
+    width?: number;
+    height?: number;
+    bitrate?: number;
     selected?: boolean;
   }[];
 }>;
@@ -227,6 +240,7 @@ export interface ReactVideoEvents {
   onIdle?: () => void; // Android
   onBandwidthUpdate?: (e: OnBandwidthUpdateData) => void; //Android
   onBuffer?: (e: OnBufferData) => void; //Android, iOS
+  onControlsVisibilityChange?: (e: OnControlsVisibilityChange) => void; // Android, iOS
   onEnd?: () => void; //All
   onError?: (e: OnVideoErrorData) => void; //Android, iOS
   onExternalPlaybackChange?: (e: OnExternalPlaybackChangeData) => void; //iOS
@@ -238,7 +252,7 @@ export interface ReactVideoEvents {
   onLoadStart?: (e: OnLoadStartData) => void; //All
   onPictureInPictureStatusChanged?: (
     e: OnPictureInPictureStatusChangedData,
-  ) => void; //iOS
+  ) => void; //Android, iOS
   onPlaybackRateChange?: (e: OnPlaybackRateChangeData) => void; //All
   onVolumeChange?: (e: OnVolumeChangeData) => void; //Android, iOS
   onProgress?: (e: OnProgressData) => void; //All
